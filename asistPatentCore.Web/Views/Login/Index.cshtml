@@ -1,0 +1,86 @@
+﻿@model asistPatentCore.ViewModel.UsersViewModel
+@using Microsoft.AspNetCore.Http
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@{
+    ViewBag.title = "Asist Patent | Giriş";
+    string loggedStatus = HttpContextAccessor.HttpContext.Session.GetString("loggedUser");
+    Layout = "~/Views/Shared/_LayoutLoginRegister.cshtml";
+}
+
+<div class="card">
+    <div class="card-block">
+
+        <div class="account-box">
+
+            <div class="card-box p-5">
+                <h2 class="text-uppercase text-center pb-4">
+                    <a href="~/" class="text-success">
+                        <span><img src="~/assets/images/logo.png" class="login-logo" alt="Asist Patent"></span>
+                    </a>
+                </h2>
+
+
+                @using (Html.BeginForm("signIn", "Login", FormMethod.Post))
+                {
+                    <div class="form-group m-b-20 row">
+                        <div class="col-12">
+                            <label for="emailaddress">Email adres</label>
+                            @Html.TextBoxFor(m=>m.userEmailAdress,new { @class = "form-control" ,@placeholder="Email adres",@type="email",@required="required"})
+                            
+                        </div>
+                    </div>
+
+                    <div class="form-group row m-b-20">
+                        <div class="col-12">
+                            <a href="page-recoverpw.html" class="text-muted float-right"><small>Şifremi unuttum?</small></a>
+                            <label for="password">Parola</label>
+                            @Html.TextBoxFor(m => m.userPassword, new { @class = "form-control", @placeholder = "Parola", @type = "password", @required = "required" })
+                        </div>
+                    </div>
+
+
+
+                    <div class="form-group row text-center m-t-10">
+                        <div class="col-12">
+                            <button class="btn btn-block btn-custom btn-custom-asist waves-effect waves-light" type="submit">Giriş yap</button>
+                        </div>
+                    </div>
+                }
+
+
+
+                <div class="row m-t-50 m-b-20">
+                    <div class="col-sm-6 col-xs-6 text-center m-b-10">
+
+                        <a class="btn btn-block btn-social btn-facebook" onclick="fbLogin();">
+                            <span class="fa fa-facebook"></span> Oturum Aç
+                        </a>
+                    </div>
+                    <div class="col-sm-6 col-xs-6">
+
+
+                        <div class="g-signin2" data-width="%100" data-onsuccess="onSignIn"></div>
+
+                    </div>
+
+                </div>
+                <div class="row m-t-10">
+                    <div class="col-sm-12 text-center">
+                        <p class="text-muted">Hesabınız yok mu ? <a href="/kayit-ol" class="text-dark m-l-5"><b> Şimdi Kayıt olun </b></a></p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+<div id="fb-root"></div>
+
+<script src="~/assets/js/socialLogin.js"></script>
+
+
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/tr_TR/sdk.js#xfbml=1&version=v7.0" nonce="fcJIQJJg"></script>
+<script src="https://apis.google.com/js/platform.js?hl=tr" async defer></script>
