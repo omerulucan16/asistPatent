@@ -9,6 +9,8 @@ using asistPatentCore.Model;
 using System.Net.Mail;
 using System.Net;
 using AutoMapper;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace asistPatentCore.Service
 {
@@ -16,10 +18,11 @@ namespace asistPatentCore.Service
     {
 
         private readonly IMapper _mapper;
+        private readonly IUsersService _usersService;
         MainContext _mainContext = new MainContext();
         public EmailService(IMapper mapper)
         {
-
+           // _usersService = usersService;
             _mapper = mapper;
         }
 
@@ -27,10 +30,20 @@ namespace asistPatentCore.Service
         {
             return _mainContext.mailSources.FirstOrDefault();
         }
-        public EmailViewModel sendRegisterEmail(RegisterViewModel registerModel)
+        public EmailViewModel sendRegisterEmail(UsersViewModel userModel)
         {
             EmailViewModel model = _mapper.Map<EmailViewModel>(_mainContext.mailTemplates.Where(w=>w.template == Model.Enums.MailTemplatesEnum.Register).FirstOrDefault());
+            //model = _mapper.Map<EmailViewModel>(userModel);
+            model.userName = userModel.userName;
+            model.userSurname = userModel.userSurname;
             
+            IList<string> userEmails = new List<string>();
+            userEmails.Add(userModel.userEmailAdress);
+            model.userEmailAdress = userEmails;
+            model.mailContent = Regex.Replace(model.mailContent, "#ad#", model.userName);
+            model.mailContent = Regex.Replace(model.mailContent, "#soyad#", model.userSurname);
+            model.mailContent = Regex.Replace(model.mailContent, "#tokenid#", userModel.accessToken);
+            model.mailContent = Regex.Replace(model.mailContent, "#web#", "https://online.asistpatent.com");
             return model;
         }
         public bool sendEmail(EmailViewModel model)
@@ -41,11 +54,15 @@ namespace asistPatentCore.Service
                 MailMessage message = new MailMessage();
                 SmtpClient smtp = new SmtpClient();
                 message.From = new MailAddress(mailsources.username);
-                message.To.Add(new MailAddress("omerulucan@windowslive.com"));
-               
-                message.Subject = "Test";
+                foreach (var item in model.userEmailAdress)
+                {
+                    message.To.Add(new MailAddress(item));
+
+                }
+
+                message.Subject = model.mailHeader;
                 message.IsBodyHtml = true;  
-                message.Body = "Mesaj içeriği";
+                message.Body = model.mailContent;
                 smtp.Port = mailsources.port;
                 smtp.Host = mailsources.smtpServer;
                 smtp.EnableSsl = mailsources.enableSsl;

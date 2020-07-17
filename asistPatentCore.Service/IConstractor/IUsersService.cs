@@ -21,5 +21,8 @@ namespace asistPatentCore.Service.IConstractor
         bool createUser(RegisterViewModel registerModel);
         string createUserToken(UsersTokenTypeEnum tokenType, Guid userid);
         string getUserToken(UsersTokenTypeEnum tokenType, Guid userid);
+       void checkRegisterToken(Guid tokenid);
+        bool changeRegisterTokenStatus(Guid tokenId);
+        bool changeRegisterUserStatus(Guid userid);
     }
 }

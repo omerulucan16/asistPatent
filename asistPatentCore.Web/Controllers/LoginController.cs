@@ -90,36 +90,6 @@ namespace asistPatentCore.Web.Controllers
             
 
         }
-        [Route("~/kayit-ol")]
-        public IActionResult Register()
-        {
-            RegisterViewModel model = new RegisterViewModel();
-            if (_cookieService.checkUserLogin())
-            {
-                return Redirect("~/anasayfa");
-            }
-            model.termsconditionMessage = _defaultValuesService.getDefaultValue("uyeliksozlesmesi");
-            return View(model);
-        }
-        [HttpPost]
-        [Route("~/kayit-ol")]
-        public IActionResult Register(RegisterViewModel model)
-        {
-            
-            if (_cookieService.checkUserLogin())
-            {
-                return Redirect("~/anasayfa");
-            }
-
-            if (_usersService.registerUser(model))
-            {
-                UsersViewModel registeredModel = _usersService.getUserInformation(model.userEmailAdress);
-                
-                model.isRegistered = true;
-            }
-            return View(model);
-        }
-
         public IActionResult Logout()
         {
             _cookieService.deleteSession();

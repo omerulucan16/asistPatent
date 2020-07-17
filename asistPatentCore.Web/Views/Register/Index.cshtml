@@ -20,9 +20,9 @@
                     </h2>
 
 
-                    @if (Model.isRegistered)
+                    @if (!Model.isRegistered)
                     {
-                        @using (Html.BeginForm("Register", "Login", FormMethod.Post, new { @class = "form-horizontal" }))
+                        @using (Html.BeginForm("Index", "Register", FormMethod.Post, new { @class = "form-horizontal" }))
                         {
                             <div class="form-group row m-b-20">
                                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
@@ -109,7 +109,7 @@
 
                                 <h4>Başarıyla kayıt oldunuz ! </h4>
 
-                                <p class="text-muted font-14 m-t-10"> Kayıt işlemlerini tamamlamak için posta hesabınıza gelen maili açınız. Eğer bir mail almadıysanız tekrar göndermek için lütfen <a href="~/yeniden-kayit-mail-gonder" class="text-dark m-r-5"><b>tıklayınız.</b></a></p>
+                                <p class="text-muted font-14 m-t-10"> Kayıt işlemlerini tamamlamak için posta hesabınıza gelen maili açınız. Eğer bir mail almadıysanız tekrar göndermek için lütfen <a href="~/yeniden-kayit-mail-gonder/@Model.userId" class="text-dark m-r-5"><b>tıklayınız.</b></a></p>
                                 <div class="row m-t-50">
                                     <div class="col-sm-12 text-center">
                                         <p class="text-muted">Giriş yapmak için <a href="~/giris" class="text-dark m-l-5"><b>tıklayınız.</b></a></p>

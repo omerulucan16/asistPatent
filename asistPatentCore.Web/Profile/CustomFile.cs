@@ -11,6 +11,8 @@ namespace asistPatentCore.Web.Profile
             CreateMap<UsersViewModel, Users>().ReverseMap();
             CreateMap<RegisterViewModel, Users>().ReverseMap();
             CreateMap<UsersViewModel, RegisterViewModel>().ReverseMap();
+            CreateMap<EmailViewModel, UsersViewModel>().ReverseMap();
+            CreateMap<EmailViewModel, MailTemplates>().ReverseMap();
         }
     }
 }

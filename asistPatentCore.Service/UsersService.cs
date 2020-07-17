@@ -14,13 +14,20 @@ namespace asistPatentCore.Service
     public class UsersService : IUsersService
     {
         private readonly IMapper _mapper;
+        private readonly IEmailService _emailService;
         MainContext _mainContext = new MainContext();
-        public UsersService(IMapper mapper)
+       
+        private IMapper mapper;
+
+        public UsersService(IMapper mapper,IEmailService emailService)
         {
-            
+
             _mapper = mapper;
+            _emailService = emailService;
+           
         }
 
+       
 
         public bool checkEmailAdress(string email)
         {
@@ -130,7 +137,7 @@ namespace asistPatentCore.Service
                 UsersViewModel registeredUserInformation = getUserInformation(registerModel.userEmailAdress);
                 if (createUserToken(UsersTokenTypeEnum.register, registeredUserInformation.userId) != null)
                 {
-
+                    
                     return true;
                 }
                 else
@@ -191,6 +198,7 @@ namespace asistPatentCore.Service
                 return null;
             }
         }
+
         public string getUserToken(UsersTokenTypeEnum tokenType, Guid userid)
         {
             UsersToken usersTokenModel = _mainContext.usersTokens.Where(w => w.status == UsersTokenEnum.Active && w.userId == userid && w.type == tokenType).OrderByDescending(o => o.createDate).FirstOrDefault();
@@ -203,6 +211,61 @@ namespace asistPatentCore.Service
                 ToastrService.AddToUserQueue(new Toastr("Kayıt sırasında bir hata oluştu.", type: Model.Enums.ToastrType.Error));
                 return null;
             }
+        }
+        public void checkRegisterToken(Guid tokenid)
+        {
+            var userToken = _mainContext.usersTokens.Where(w => w.tokenId == tokenid && w.status == UsersTokenEnum.Active).FirstOrDefault();
+            if (userToken != null)
+            {
+                Guid getUserId = userToken.userId;
+                if (getUserToken(UsersTokenTypeEnum.register, getUserId) == tokenid.ToString())
+                {
+                    if (changeRegisterTokenStatus(tokenid) && changeRegisterUserStatus(getUserId))
+                    {
+                        ToastrService.AddToUserQueue(new Toastr("Hesabınız başarıyla aktif edilmiştir.", type: Model.Enums.ToastrType.Success));
+
+                    }
+                    else
+                    {
+                        ToastrService.AddToUserQueue(new Toastr("Hesabınız aktif edilirken bir hata gerçekleşmiştir.", type: Model.Enums.ToastrType.Error));
+
+                    }
+
+                }
+                else
+                {
+                    ToastrService.AddToUserQueue(new Toastr("Hesabınız aktif edilirken bir hata gerçekleşmiştir.", type: Model.Enums.ToastrType.Error));
+
+                }
+            }
+            else
+            {
+                ToastrService.AddToUserQueue(new Toastr("Hesabınız aktif edilirken bir hata gerçekleşmiştir.", type: Model.Enums.ToastrType.Error));
+
+            }
+
+        }
+        public bool changeRegisterTokenStatus(Guid tokenId)
+        {
+            UsersToken usersToken = _mainContext.usersTokens.Where(w => w.tokenId == tokenId).FirstOrDefault();
+            usersToken.status = UsersTokenEnum.Passive;
+            if (_mainContext.SaveChanges() == 1)
+                return true;
+            else
+                return false;
+            
+            
+        }
+        public bool changeRegisterUserStatus(Guid userid)
+        {
+            Users userStatus  = _mainContext.users.Where(w => w.userId == userid).FirstOrDefault();
+            userStatus.status = UserStatusEnum.Active;
+            if (_mainContext.SaveChanges() == 1)
+                return true;
+            else
+                return false;
+
+
         }
         public bool loginUser(string email, string password)
         {

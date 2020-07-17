@@ -37,10 +37,8 @@ namespace asistPatentCore.Web
             {
                 c.AddProfile(new CustomProfile());
             });
-            services.AddSingleton<IUsersService>(x =>
-                new UsersService(x.GetRequiredService<IMapper>()));
-            var mapper = config.CreateMapper();
-            services.AddSingleton(mapper);
+            
+            
             services.AddAuthentication().AddFacebook(option => {
                 option.AppId = "276966980291317";
                 option.AppSecret = "170516f59270b844ea29bb6529c83da3";
@@ -51,6 +49,12 @@ namespace asistPatentCore.Web
             services.AddTransient<ISocialLoginService, SocialLoginService>();
             services.AddTransient<IDefaultValuesService, DefaultValuesService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IUsersService, UsersService>();
+            //services.AddSingleton<IUsersService>(x =>
+            //    new UsersService( x.GetRequiredService<IMapper>()));
+
+            var mapper = config.CreateMapper();
+            services.AddSingleton(mapper);
             services.AddScoped(sp => sp.GetRequiredService<IHttpContextAccessor>().HttpContext);
             services.AddHttpContextAccessor();
             services.AddSession(options =>
@@ -80,7 +84,7 @@ namespace asistPatentCore.Web
             app.UseRouting();
             app.UseAuthentication();
             app.UseAuthorization();
-
+            
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
