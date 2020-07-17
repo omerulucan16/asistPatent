@@ -22,7 +22,12 @@ namespace asistPatentCore.Service.IConstractor
         string createUserToken(UsersTokenTypeEnum tokenType, Guid userid);
         string getUserToken(UsersTokenTypeEnum tokenType, Guid userid);
        void checkRegisterToken(Guid tokenid);
-        bool changeRegisterTokenStatus(Guid tokenId);
+        bool changeTokenStatus(Guid tokenId);
         bool changeRegisterUserStatus(Guid userid);
+        UsersViewModel getUserInformationFromId(Guid userId);
+        bool forgetPassSend(string emailaddress);
+        bool checkForgetPassToken(Guid tokenId);
+        string getUserIdFromUserToken(Guid userTokenId);
+        bool changeRegisterUserPassword(RegisterViewModel model);
     }
 }

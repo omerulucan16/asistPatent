@@ -9,6 +9,8 @@ using asistPatentCore.ViewModel;
 using asistPatentCore.Service;
 using Microsoft.AspNetCore.Http;
 using asistPatentCore.Service.IConstractor;
+using AutoMapper;
+
 namespace asistPatentCore.Web.Controllers
 {
     public class LoginController : Controller
@@ -18,13 +20,15 @@ namespace asistPatentCore.Web.Controllers
         private readonly ISocialLoginService _socialLoginService;
         private readonly IDefaultValuesService _defaultValuesService;
         private readonly IEmailService _emailService;
-        public LoginController(ICookieService cookieService,IEmailService emailService,IUsersService usersService,ISocialLoginService socialLoginService,IDefaultValuesService defaultValuesService)
+        private readonly IMapper _mapper;
+        public LoginController(ICookieService cookieService,IEmailService emailService,IUsersService usersService,ISocialLoginService socialLoginService,IDefaultValuesService defaultValuesService,IMapper mapper)
         {
             _usersService = usersService;
             _defaultValuesService = defaultValuesService;
             _cookieService = cookieService;
             _socialLoginService = socialLoginService;
             _emailService = emailService;
+            _mapper = mapper;
         }
         [Route("giris")]
         [Route("~/")]
@@ -90,6 +94,63 @@ namespace asistPatentCore.Web.Controllers
             
 
         }
+        [Route("~/sifremi-unuttum")]
+        public IActionResult forgetPass()
+        {
+            if (_cookieService.checkUserLogin())
+            {
+                return Redirect("~/anasayfa");
+            }
+            UsersViewModel model = new UsersViewModel();
+            return View(model);
+        }
+        [HttpPost]
+        [Route("~/sifremi-unuttum")]
+        public IActionResult forgetPass(UsersViewModel model)
+        {
+            
+            if (_cookieService.checkUserLogin())
+            {
+                return Redirect("~/anasayfa");
+            }
+            if (_usersService.forgetPassSend(model.userEmailAdress))
+            {
+                model.isRegistered = true;
+            }
+            return View(model);
+        }
+        [Route("~/sifremi-sifirla/{tokenId}")]
+        public IActionResult passReset(Guid tokenId)
+        {
+            if (_cookieService.checkUserLogin())
+            {
+                return Redirect("~/anasayfa");
+            }
+            RegisterViewModel passResetModel = new RegisterViewModel();
+            if (!_usersService.checkForgetPassToken(tokenId))
+            {
+                return Redirect("~/giris");
+            }
+            passResetModel.accessToken = tokenId.ToString();
+            return View(passResetModel);
+        }
+        [HttpPost]
+        public IActionResult passResetPost(RegisterViewModel model)
+        {
+            if (_cookieService.checkUserLogin())
+            {
+                return Redirect("~/anasayfa");
+            }
+            
+            if (_usersService.changeRegisterUserPassword(model))
+            {
+                return Redirect("~/giris");
+            }
+            model.userPassword = "*";
+            model.userRePassword = "*";
+            return Redirect("~/sifremi-sifirla/"+model.accessToken);
+        }
+
         public IActionResult Logout()
         {
             _cookieService.deleteSession();

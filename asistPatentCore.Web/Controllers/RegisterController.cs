@@ -47,17 +47,27 @@ namespace asistPatentCore.Web.Controllers
             {
                 return Redirect("~/anasayfa");
             }
-
-            if (_usersService.registerUser(model))
+            model.termsconditionMessage = _defaultValuesService.getDefaultValue("uyeliksozlesmesi");
+            if (model.termscondition)
             {
-                UsersViewModel registeredModel = _usersService.getUserInformation(model.userEmailAdress);
-                registeredModel.accessToken = _usersService.getUserToken(Model.Enums.UsersTokenTypeEnum.register, registeredModel.userId);
-                if (_emailService.sendEmail(_emailService.sendRegisterEmail(registeredModel)))
+                if (_usersService.registerUser(model))
                 {
-                    model.userId = registeredModel.userId;
+                    UsersViewModel registeredModel = _usersService.getUserInformation(model.userEmailAdress);
+                    registeredModel.accessToken = _usersService.getUserToken(Model.Enums.UsersTokenTypeEnum.register, registeredModel.userId);
+                    if (_emailService.sendEmail(_emailService.sendRegisterEmail(registeredModel)))
+                    {
+                        model.userId = registeredModel.userId;
+                    }
+                    model.isRegistered = true;
                 }
-                model.isRegistered = true;
             }
+            else
+            {
+
+                ToastrService.AddToUserQueue(new Toastr("Lütfen üyelik sözleşmesini okuyup onaylanyınız.", type: Model.Enums.ToastrType.Warning));
+
+            }
+
             return View(model);
         }
         [HttpGet]
@@ -66,6 +76,22 @@ namespace asistPatentCore.Web.Controllers
         {
             _usersService.checkRegisterToken(userToken);
             return Redirect("~/giris");
+        }
+        [HttpGet]
+        [Route("~/yeniden-kayit-mail-gonder/{userId}")]
+        public IActionResult resendMail(Guid userId)
+        {
+            if (_usersService.createUserToken(Model.Enums.UsersTokenTypeEnum.register, userId) != null)
+            {
+                UsersViewModel registeredModel = _usersService.getUserInformationFromId(userId);
+                registeredModel.accessToken = _usersService.getUserToken(Model.Enums.UsersTokenTypeEnum.register, registeredModel.userId);
+                if (_emailService.sendEmail(_emailService.sendRegisterEmail(registeredModel)))
+                {
+                    ToastrService.AddToUserQueue(new Toastr("Kayıt işlemlerini tamamlamak için posta hesabınıza gelen maili açınız.", type: Model.Enums.ToastrType.Success));
+                }
+            }
+            return Redirect("~/giris");
+
         }
     }
 }

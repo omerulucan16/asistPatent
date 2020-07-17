@@ -9,5 +9,6 @@ namespace asistPatentCore.Service.IConstractor
         //MailSources GetMailSources();
         bool sendEmail(EmailViewModel model);
         EmailViewModel sendRegisterEmail(UsersViewModel registerModel);
+        EmailViewModel sendForgetPassEmail(UsersViewModel userModel);
     }
 }

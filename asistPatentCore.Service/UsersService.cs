@@ -118,6 +118,26 @@ namespace asistPatentCore.Service
             model.userPassword = "*";
             return model;
         }
+        public UsersViewModel getUserInformationFromId(Guid userId)
+        {
+            UsersViewModel model = new UsersViewModel();
+            model = _mapper.Map<UsersViewModel>(_mainContext.users.Where(w => w.userId == userId).FirstOrDefault());
+            model.userPassword = "*";
+            return model;
+        }
+        public string getUserIdFromUserToken(Guid userTokenId)
+        {
+
+            var userToken = _mainContext.usersTokens.Where(w => w.tokenId == userTokenId && w.status == UsersTokenEnum.Active).FirstOrDefault();
+            if (userToken != null)
+            {
+                return userToken.userId.ToString();
+            }
+            else
+            {
+                return null;
+            }
+        }
         public UsersViewModel createSocialUser(UsersViewModel socialModel)
         {
             Users model = new Users();
@@ -198,7 +218,27 @@ namespace asistPatentCore.Service
                 return null;
             }
         }
-
+        public bool forgetPassSend(string emailaddress)
+        {
+            UsersViewModel forgetUserInformation = getUserInformation(emailaddress);
+            string userToken = createUserToken(UsersTokenTypeEnum.forgetpass, forgetUserInformation.userId);
+            if (userToken != null )
+            {
+                forgetUserInformation.accessToken = userToken;
+                if (_emailService.sendEmail(_emailService.sendForgetPassEmail(forgetUserInformation)))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
         public string getUserToken(UsersTokenTypeEnum tokenType, Guid userid)
         {
             UsersToken usersTokenModel = _mainContext.usersTokens.Where(w => w.status == UsersTokenEnum.Active && w.userId == userid && w.type == tokenType).OrderByDescending(o => o.createDate).FirstOrDefault();
@@ -220,7 +260,7 @@ namespace asistPatentCore.Service
                 Guid getUserId = userToken.userId;
                 if (getUserToken(UsersTokenTypeEnum.register, getUserId) == tokenid.ToString())
                 {
-                    if (changeRegisterTokenStatus(tokenid) && changeRegisterUserStatus(getUserId))
+                    if (changeTokenStatus(tokenid) && changeRegisterUserStatus(getUserId))
                     {
                         ToastrService.AddToUserQueue(new Toastr("Hesabınız başarıyla aktif edilmiştir.", type: Model.Enums.ToastrType.Success));
 
@@ -245,7 +285,7 @@ namespace asistPatentCore.Service
             }
 
         }
-        public bool changeRegisterTokenStatus(Guid tokenId)
+        public bool changeTokenStatus(Guid tokenId)
         {
             UsersToken usersToken = _mainContext.usersTokens.Where(w => w.tokenId == tokenId).FirstOrDefault();
             usersToken.status = UsersTokenEnum.Passive;
@@ -266,6 +306,61 @@ namespace asistPatentCore.Service
                 return false;
 
 
+        }
+        public bool changeRegisterUserPassword(RegisterViewModel model)
+        {
+            string userId = getUserIdFromUserToken(new Guid(model.accessToken));
+            if (userId != null && (model.userPassword == model.userRePassword) && checkUserPassword(model.userPassword))
+            {
+                Users userStatus = _mainContext.users.Where(w => w.userId == new Guid(userId)).FirstOrDefault();
+                userStatus.userPassword = model.userPassword;
+                if (_mainContext.SaveChanges() == 1)
+                {
+                    ToastrService.AddToUserQueue(new Toastr("Şifreniz başarıyla sıfırlanmıştır.", type: Model.Enums.ToastrType.Success));
+                    changeTokenStatus(new Guid(model.accessToken));
+                    return true;
+                }
+                
+                else
+                {
+                    ToastrService.AddToUserQueue(new Toastr("Şifreniz sıfırlanırken bir hata ile karşılaşıldı.Parolanıza bir öncekiyle aynı olmamalıdır.", type: Model.Enums.ToastrType.Error));
+                    return false;
+                }
+                
+            }
+            else
+            {
+                ToastrService.AddToUserQueue(new Toastr("Şifreniz sıfırlanırken bir hata ile karşılaşıldı. Lütfen parolanızı kontrol ediniz.", type: Model.Enums.ToastrType.Error));
+                return false;
+            }
+
+
+
+
+
+        }
+        public bool checkForgetPassToken(Guid tokenId)
+        {
+            var userToken = _mainContext.usersTokens.Where(w => w.tokenId == tokenId && w.status == UsersTokenEnum.Active).FirstOrDefault();
+            if (userToken != null)
+            {
+                Guid getUserId = userToken.userId;
+                if (getUserToken(UsersTokenTypeEnum.forgetpass, getUserId) == tokenId.ToString())
+                {
+
+                    return true;
+                }
+                else
+                {
+                    ToastrService.AddToUserQueue(new Toastr("Şifre sıfırlama talebiniz zaman aşımına uğramıştır.", type: Model.Enums.ToastrType.Error));
+                    return false;
+                }
+            }
+            else
+            {
+                ToastrService.AddToUserQueue(new Toastr("Şifre sıfırlama talebiniz zaman aşımına uğramıştır.", type: Model.Enums.ToastrType.Error));
+                return false;
+            }
         }
         public bool loginUser(string email, string password)
         {

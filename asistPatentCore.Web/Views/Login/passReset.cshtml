@@ -1,0 +1,44 @@
+﻿@model asistPatentCore.ViewModel.RegisterViewModel
+@using Microsoft.AspNetCore.Http
+@{
+    ViewBag.title = "Asist Patent | Şifremi Unuttum";
+    Layout = "~/Views/Shared/_LayoutLoginRegister.cshtml";
+}
+<div class="card">
+    <div class="card-block">
+
+        <div class="account-box">
+
+            <div class="card-box p-5">
+                <h2 class="text-uppercase text-center pb-4">
+                    <a href="~/" class="text-success">
+                        <span><img src="~/assets/images/logo.png" class="login-logo" alt="Asist Patent"></span>
+                    </a>
+                </h2>
+                @using (Html.BeginForm("passResetPost", "Login", FormMethod.Post))
+                {
+                    @Html.HiddenFor(m => m.accessToken)
+                    <div class="form-group m-b-20 row">
+                        <div class="col-12">
+                            <label for="password">Parola</label>
+                            @Html.TextBoxFor(m => m.userPassword, new { @class = "form-control", @placeholder = "Parola", @type = "password", @required = "required" })
+                        </div>
+                    </div>
+                    <div class="form-group m-b-20 row">
+                        <div class="col-12">
+                            <label for="password">Parola doğrula</label>
+                            @Html.TextBoxFor(m => m.userRePassword, new { @class = "form-control", @placeholder = "Parola doğrula", @type = "password", @required = "required" })
+                        </div>
+                    </div>
+
+                    <div class="form-group row text-center m-t-10">
+                        <div class="col-12">
+                            <button class="btn btn-block btn-custom btn-custom-asist waves-effect waves-light" type="submit">Şifremi sıfırla</button>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+
+    </div>
+</div>

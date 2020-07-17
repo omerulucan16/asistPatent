@@ -46,6 +46,22 @@ namespace asistPatentCore.Service
             model.mailContent = Regex.Replace(model.mailContent, "#web#", "https://online.asistpatent.com");
             return model;
         }
+        public EmailViewModel sendForgetPassEmail(UsersViewModel userModel)
+        {
+            EmailViewModel model = _mapper.Map<EmailViewModel>(_mainContext.mailTemplates.Where(w => w.template == Model.Enums.MailTemplatesEnum.ForgetPassword).FirstOrDefault());
+            //model = _mapper.Map<EmailViewModel>(userModel);
+            model.userName = userModel.userName;
+            model.userSurname = userModel.userSurname;
+
+            IList<string> userEmails = new List<string>();
+            userEmails.Add(userModel.userEmailAdress);
+            model.userEmailAdress = userEmails;
+            model.mailContent = Regex.Replace(model.mailContent, "#ad#", model.userName);
+            model.mailContent = Regex.Replace(model.mailContent, "#soyad#", model.userSurname);
+            model.mailContent = Regex.Replace(model.mailContent, "#tokenid#", userModel.accessToken);
+            model.mailContent = Regex.Replace(model.mailContent, "#web#", "https://online.asistpatent.com");
+            return model;
+        }
         public bool sendEmail(EmailViewModel model)
         {
             try
