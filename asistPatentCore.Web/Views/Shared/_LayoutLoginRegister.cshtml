@@ -1,0 +1,120 @@
+﻿
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.title</title>
+    <meta name="google-signin-client_id" content="138124565194-9h552o0aqmjiepsgkf8fbpio66b2gvvb.apps.googleusercontent.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta content="A fully featured admin theme which can be used to build CRM, CMS, etc." name="description" />
+    <meta content="Coderthemes" name="author" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- App favicon -->
+    <link rel="shortcut icon" href="~/assets/images/favicon.ico">
+
+    <!-- App css -->
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="~/assets/css/toastr.css" rel="stylesheet" type="text/css" />
+    <link href="/plugins/custombox/css/custombox.min.css" rel="stylesheet">
+    <script src="~/assets/js/modernizr.min.js"></script>
+
+</head>
+
+<body>
+
+    <!-- Begin page -->
+    <div class="accountbg" style="background: url('/assets/images/bg-1.jpg');background-size: cover;background-position: center;"></div>
+
+    <div class="wrapper-page account-page-full">
+        @RenderBody()
+        <div class="m-t-40 text-center">
+            <p class="account-copyright">@DateTime.Now.Year © Asist Patent. - asistpatent.com</p>
+        </div>
+    </div>
+
+
+
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/bootstrap.bundle.min.js"></script>
+    <script src="~/assets/js/waves.js"></script>
+    <script src="~/assets/js/jquery.slimscroll.js"></script>
+    <script src="~/assets/js/jquery.core.js"></script>
+    <script src="~/assets/js/jquery.app.js"></script>
+    <script src="~/assets/js/toastr.min.js"></script>
+    <script src="~/plugins/custombox/js/custombox.min.js"></script>
+    <script src="/plugins/custombox/js/legacy.min.js"></script>
+    @{ ProcessToastrs();}
+    @{
+        void ProcessToastrs()
+        {
+            List<asistPatentCore.Service.Toastr> toastrs = asistPatentCore.Service.ToastrService.ReadAndRemoveUserQueue();
+
+            if (toastrs != null && toastrs.Count > 0)
+            {
+                foreach (var item in toastrs)
+                {
+                    ShowToastr(item.Message, item.Title, item.Type);
+                }
+            }
+        }
+        void ShowToastr(string Message, string Title, asistPatentCore.Model.Enums.ToastrType type)
+        {
+            switch (type)
+            {
+                case asistPatentCore.Model.Enums.ToastrType.Info:
+                    ToastrInfo(Message, Title);
+                    break;
+                case asistPatentCore.Model.Enums.ToastrType.Success:
+                    ToastrSuccess(Message, Title);
+                    break;
+                case asistPatentCore.Model.Enums.ToastrType.Warning:
+                    ToastrWarning(Message, Title);
+                    break;
+                case asistPatentCore.Model.Enums.ToastrType.Error:
+                    ToastrError(Message, Title);
+                    break;
+                default:
+                    ToastrInfo(Message, Title);
+                    break;
+            }
+        }
+        void ToastrInfo(string message, string title)
+        {
+            <script>
+        window.onload = function () {
+            toastr.info('@message', '@title');
+        }
+            </script>
+
+        }
+        void ToastrWarning(string message, string title)
+        {
+            <script>
+        window.onload = function () {
+            toastr.warning('@message', '@title');
+        }
+            </script>
+        }
+        void ToastrSuccess(string message, string title)
+        {
+            <script>
+              window.onload = function () {
+                  toastr.success('@message', '@title');
+              }
+            </script>
+        }
+        void ToastrError(string message, string title)
+        {
+            <script>
+              window.onload = function () {
+                  toastr.error('@message', '@title');
+              }
+            </script>
+        }
+    }
+
+</body>
+</html>

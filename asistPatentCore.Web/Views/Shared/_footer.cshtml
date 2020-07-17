@@ -1,0 +1,72 @@
+﻿@{ ProcessToastrs();}
+@{
+    void ProcessToastrs()
+    {
+        List<asistPatentCore.Service.Toastr> toastrs = asistPatentCore.Service.ToastrService.ReadAndRemoveUserQueue();
+
+        if (toastrs != null && toastrs.Count > 0)
+        {
+            foreach (var item in toastrs)
+            {
+                ShowToastr(item.Message, item.Title, item.Type);
+            }
+        }
+    }
+    void ShowToastr(string Message, string Title, asistPatentCore.Model.Enums.ToastrType type)
+    {
+        switch (type)
+        {
+            case asistPatentCore.Model.Enums.ToastrType.Info:
+                ToastrInfo(Message, Title);
+                break;
+            case asistPatentCore.Model.Enums.ToastrType.Success:
+                ToastrSuccess(Message, Title);
+                break;
+            case asistPatentCore.Model.Enums.ToastrType.Warning:
+                ToastrWarning(Message, Title);
+                break;
+            case asistPatentCore.Model.Enums.ToastrType.Error:
+                ToastrError(Message, Title);
+                break;
+            default:
+                ToastrInfo(Message, Title);
+                break;
+        }
+    }
+    void ToastrInfo(string message, string title)
+    {
+        <script>
+        window.onload = function () {
+            toastr.info('@message', '@title');
+        }
+        </script>
+
+    }
+    void ToastrWarning(string message, string title)
+    {
+        <script>
+        window.onload = function () {
+            toastr.warning('@message', '@title');
+        }
+        </script>
+    }
+    void ToastrSuccess(string message, string title)
+    {
+        <script>
+              window.onload = function () {
+                  toastr.success('@message', '@title');
+              }
+        </script>
+    }
+    void ToastrError(string message, string title)
+    {
+        <script>
+              window.onload = function () {
+                  toastr.error('@message', '@title');
+              }
+        </script>
+    }
+}
+<footer class="footer">
+    @DateTime.Now.Year © Asist Patent. - asistpatent.com
+</footer>
