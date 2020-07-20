@@ -1,0 +1,75 @@
+﻿@model asistPatentCore.ViewModel.MyAccountViewModel 
+@{
+    ViewBag.title = "Asist Patent | Hesabım";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+    <div class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="card-box">
+                        <h4 class="m-t-0 header-title">
+                            Kişisel Bilgilerim
+                        </h4>
+                        
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="p-20">
+                                    @using (Html.BeginForm("Index", "MyAccount", FormMethod.Post))
+                                    {
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Ad</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                @Html.TextBoxFor(m => m.userName, new { @class = "form-control", @required = "required" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label" for="example-email">Soyad</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                @Html.TextBoxFor(m => m.userSurname, new { @class = "form-control", @required = "required" })
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Telefon Numarası</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                @Html.TextBoxFor(m => m.userPhoneNumber, new { @class = "form-control", @required = "required" })
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Email Adresi</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                @Html.DisplayFor(m => m.userEmailAdress, new { @class = "form-control", @required = "required" })
+                                            </div>
+                                        </div>
+
+
+                                        <button class="btn float-right btn-custom-asist " type="submit">Bilgilerimi Güncelle</button>
+
+                                    }
+                                    </div>
+                            </div>
+
+                        </div>
+                        <!-- end row -->
+
+                    </div> <!-- end card-box -->
+                </div><!-- end col -->
+            </div>
+            <!-- end row -->
+
+
+           
+
+          
+
+          
+           
+          
+
+        </div> <!-- container -->
+
+    </div>

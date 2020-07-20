@@ -15,6 +15,7 @@ namespace asistPatentCore.ViewModel
         public bool isRegistered { get; set; }
         public bool termscondition { get; set; }
         public UserStatusEnum status { get; set; }
+        public UserRoleEnum role { get; set; }
         public ProviderEnum provider { get; set; }
         public DateTime userCreateDate { get; set; }
     }

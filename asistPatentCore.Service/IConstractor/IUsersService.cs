@@ -29,5 +29,7 @@ namespace asistPatentCore.Service.IConstractor
         bool checkForgetPassToken(Guid tokenId);
         string getUserIdFromUserToken(Guid userTokenId);
         bool changeRegisterUserPassword(RegisterViewModel model);
+        bool changeRegisterUserPasswordWithEmail(MyAccountViewModel model);
+        UsersListViewModel getUsersList();
     }
 }

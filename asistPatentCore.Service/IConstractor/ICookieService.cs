@@ -10,14 +10,7 @@ namespace asistPatentCore.Service.IConstractor
        //bool deleteUserLogin();
         bool checkUserLogin();
         bool deleteSession();
-        //UsersViewModel getSessionUser();
-        //IList<Users> getAdminUserList();
-        //Users getSingleAdminUser(int id);
-        //Boolean checkaddeduser(adminUsersViewModel model);
-        //Boolean checkSpells(adminUsersViewModel model);
-        //Boolean addorUpdateUser(adminUsersViewModel model);
-        //Boolean saveMySettings(adminUsersViewModel model);
-        //Boolean deleteUser(int id);
-        //Boolean resendPassword(int id);
+        string getSessionEmail();
+        bool checkAdminState(Model.Enums.UserRoleEnum role);
     }
 }

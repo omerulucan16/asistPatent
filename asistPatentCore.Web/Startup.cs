@@ -50,6 +50,8 @@ namespace asistPatentCore.Web
             services.AddTransient<IDefaultValuesService, DefaultValuesService>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddTransient<IUsersService, UsersService>();
+            services.AddTransient<IMyAccountService, MyAccountService>();
+            services.AddTransient<IEmailTemplateService, EmailTemplateService>();
             //services.AddSingleton<IUsersService>(x =>
             //    new UsersService( x.GetRequiredService<IMapper>()));
 

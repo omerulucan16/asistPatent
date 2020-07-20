@@ -8,8 +8,8 @@ namespace asistPatentCore.Data
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-            optionsBuilder.UseMySql(@"server=localhost;database=AsistPatent;uid=root;password=;port=3306");
-            //optionsBuilder.UseMySql(@"server=localhost;database=AsistPaten;uid=onlineas;password=r6.x:HQy54W7dA;port=3306");
+            //optionsBuilder.UseMySql(@"server=localhost;database=AsistPatent;uid=root;password=;port=3306");
+            optionsBuilder.UseMySql(@"server=localhost;database=AsistPaten;uid=onlineas;password=r6.x:HQy54W7dA;port=3306");
         }
         public DbSet<Users> users { get; set; }
         public DbSet<DefaultValues> defaultValues { get; set; }

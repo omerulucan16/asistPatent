@@ -1,0 +1,60 @@
+﻿@model asistPatentCore.ViewModel.UsersListViewModel
+@{
+    ViewBag.title = "Asist Patent | Kullanıcı Listesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Start Page content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+
+                    <div class="table-rep-plugin">
+                        <div class="table-responsive" data-pattern="priority-columns">
+                            <table id="tech-companies-1" class="table  table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Ad</th>
+                                        <th>Soyad</th>
+                                        <th>E-Posta</th>
+                                        <th>Telefon</th>
+                                        <th>Durum</th>
+                                        <th>Rol</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.userList)
+                                    {
+                                        string role = item.role == asistPatentCore.Model.Enums.UserRoleEnum.admin ? "Yönetici" :
+                                            item.role == asistPatentCore.Model.Enums.UserRoleEnum.customer ? "Müşteri" : "Üst Yönetici";
+                                        string status = item.status == asistPatentCore.Model.Enums.UserStatusEnum.Active ? "Aktif" :
+                                            item.status == asistPatentCore.Model.Enums.UserStatusEnum.Passive ? "Aktif Değil" : "Bekliyor";
+                                        <tr>
+                                        <th>@item.userName</th>
+                                        <td>@item.userSurname</td>
+                                        <td>@item.userEmailAdress</td>
+                                        <td>@item.userPhoneNumber</td>
+                                        <td>@status</td>
+                                        <td>@role</td>
+                                        <td><a href="~/admin/kullanicilari-yonet/@item.userId" class=" badge badge-success badge-pill" data-toggle="tooltip" data-placement="top" title="" data-original-title="Şifre Gönder" ><i class="fa fa-unlock-alt"></i></a></td>
+                                    </tr>
+                                        role = "";
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+
+    </div> <!-- container -->
+
+</div> <!-- content -->

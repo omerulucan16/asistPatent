@@ -13,9 +13,11 @@ namespace asistPatentCore.Service
         
         MainContext _mainContext = new MainContext();
         private readonly HttpContext _httpContext;
-        public CookieService( HttpContext httpContext)
+        private readonly IUsersService _usersService;
+        public CookieService( HttpContext httpContext,IUsersService usersService)
         {
             _httpContext = httpContext;
+            _usersService = usersService;
         }
         public bool setUserLogin(UsersViewModel model)
         {
@@ -28,17 +30,6 @@ namespace asistPatentCore.Service
                 _httpContext.Session.Set("id", Encoding.UTF8.GetBytes(model.userId.ToString()));
                 _httpContext.Session.Set("status", Encoding.UTF8.GetBytes(model.status.ToString()));
                 _httpContext.Session.Set("provider", Encoding.UTF8.GetBytes(model.provider.ToString()));
-                //HttpContext.Current.Session.Add("name", model.name);
-                //HttpContext.Current.Session.Add("name", model.name);
-                //HttpContext.Current.Session.Add("name", model.name);
-                //HttpContext.Current.Session.Add("name", model.name);
-
-                //HttpContext.Current.Session.Add("name", model.name);
-
-                //HttpContext.Current.Session.Add("surname", model.surname);
-                //HttpContext.Current.Session.Add("emailadress", model.emailadress);
-                //HttpContext.Current.Session.Add("id", model.id);
-                //HttpContext.Current.Session.Add("status", model.roleLevel);
                 return true;
             }
             catch (Exception)
@@ -56,6 +47,41 @@ namespace asistPatentCore.Service
                 return true;
             else
                 return false;
+        }
+       
+        public bool checkAdminState(Model.Enums.UserRoleEnum role)
+        {
+            var loggedUserByte = default(byte[]);
+            _httpContext.Session.TryGetValue("loggedUser", out loggedUserByte);
+            string loggedUser = loggedUserByte == null ? "" : Encoding.UTF8.GetString(loggedUserByte);
+            if (loggedUser != "" && loggedUser == "X")
+            {
+                string emailadress = getSessionEmail();
+                UsersViewModel userModel = _usersService.getUserInformation(emailadress);
+                if (userModel != null || userModel.userId != null)
+                {
+                    if (role == Model.Enums.UserRoleEnum.supervisor && userModel.role == Model.Enums.UserRoleEnum.supervisor)
+                        return true;
+                    else if (role == Model.Enums.UserRoleEnum.admin && userModel.role == Model.Enums.UserRoleEnum.admin)
+                        return true;
+                    else
+                        return false;
+
+                }
+                else
+                    return false;
+                
+            }
+            else
+                return false;
+        }
+        
+        public string getSessionEmail()
+        {
+            var loggedUserByte = default(byte[]);
+            _httpContext.Session.TryGetValue("emailadress", out loggedUserByte);
+            string loggedUserEmail = loggedUserByte == null ? "" : Encoding.UTF8.GetString(loggedUserByte);
+            return loggedUserEmail;
         }
         public bool deleteSession()
         {

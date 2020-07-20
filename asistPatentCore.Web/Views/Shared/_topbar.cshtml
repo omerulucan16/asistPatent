@@ -4,14 +4,14 @@
 @using asistPatentCore.ViewModel;
 @using AutoMapper;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
-@inject asistPatentCore.Service.IConstractor.IUsersService _userService; 
+@inject asistPatentCore.Service.IConstractor.IUsersService _userService;
+@inject asistPatentCore.Service.IConstractor.ICookieService _cookieService;
 @{
 
     string loggedStatus = HttpContextAccessor.HttpContext.Session.GetString("loggedUser");
     string provider = HttpContextAccessor.HttpContext.Session.GetString("provider");
     string email = HttpContextAccessor.HttpContext.Session.GetString("emailadress");
     UsersViewModel userModel = new UsersViewModel();
-
     userModel = _userService.getUserInformation(email);
 }
 <div class="topbar">
@@ -31,31 +31,34 @@
                     </div>
 
                     <!-- item-->
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <i class="fi-head"></i> <span>Hesabım</span>
-                    </a>
+                    @if (_cookieService.checkAdminState(asistPatentCore.Model.Enums.UserRoleEnum.supervisor))
+                    {
+                        <a href="javascript:void(0);" class="dropdown-item notify-item">
+                            <i class="fi-head"></i> <span>Hesabım</span>
+                        </a>
+                    }
 
                     <!--
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <i class="fi-cog"></i> <span>Settings</span>
-                    </a>
-                     -->
+    <a href="javascript:void(0);" class="dropdown-item notify-item">
+        <i class="fi-cog"></i> <span>Settings</span>
+    </a>
+     -->
                     <!--
-                     <a href="javascript:void(0);" class="dropdown-item notify-item">
-                         <i class="fi-help"></i> <span>Support</span>
-                     </a>
-                    -->
+     <a href="javascript:void(0);" class="dropdown-item notify-item">
+         <i class="fi-help"></i> <span>Support</span>
+     </a>
+    -->
                     <!--
-                    <a href="javascript:void(0);" class="dropdown-item notify-item">
-                        <i class="fi-lock"></i> <span>Lock Screen</span>
-                    </a>
-                    -->
+    <a href="javascript:void(0);" class="dropdown-item notify-item">
+        <i class="fi-lock"></i> <span>Lock Screen</span>
+    </a>
+    -->
                     @using (Html.BeginForm("Logout", "Login", FormMethod.Get, new { id = "logoutform" }))
                     {
 
                     }
                     <!-- item-->
-                    
+
                     <button onclick="signOutSocial('@provider')" class="dropdown-item notify-item cursor-show">
                         <i class="fi-power"></i> <span>Çıkış Yap</span>
                     </button>
@@ -72,13 +75,13 @@
                 </button>
             </li>
             <!--<li>
-        <div class="page-title-box">
-            <h4 class="page-title">Hoşgeldiniz  </h4>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active">@userModel.userName @userModel.userSurname</li>
-            </ol>
-        </div>
-    </li>-->
+                <div class="page-title-box">
+                    <h4 class="page-title">Hoşgeldiniz  </h4>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item active">@userModel.userName @userModel.userSurname</li>
+                    </ol>
+                </div>
+            </li>-->
 
         </ul>
 

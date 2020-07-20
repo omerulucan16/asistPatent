@@ -2,6 +2,7 @@
 @using asistPatentCore.ViewModel;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @inject asistPatentCore.Service.IConstractor.IUsersService _userService;
+@inject asistPatentCore.Service.IConstractor.ICookieService _cookieService;
 @{
     string loggedStatus = HttpContextAccessor.HttpContext.Session.GetString("loggedUser");
     string provider = HttpContextAccessor.HttpContext.Session.GetString("provider");
@@ -17,10 +18,10 @@
         <div class="topbar-left">
             <a href="~/anasayfa" class="logo">
                 <span>
-                    <img src="assets/images/logo.png" class="left-logo" alt="Asist Patent">
+                    <img src="~/assets/images/logo.png" class="left-logo" alt="Asist Patent">
                 </span>
                 <i>
-                    <img src="assets/images/logo-sm.jpg" height="35" alt="Asist Patent">
+                    <img src="~/assets/images/logo-sm.jpg" height="35" alt="Asist Patent">
                 </i>
             </a>
         </div>
@@ -70,11 +71,24 @@
                 <li>
                     <a href="javascript: void(0);"><i class="fa fa-user-circle"></i> <span> Hesabım </span> <span class="menu-arrow"></span></a>
                     <ul class="nav-second-level" aria-expanded="false">
-                        <li><a href="~/bilgilerimi">Bilgilerimi Güncelle</a></li>
-                        <li><a href="ui-typography.html">Şifremi Güncelle</a></li>
+                        <li><a href="~/hesabim/bilgilerimi-guncelle">Bilgilerimi Güncelle</a></li>
+                        <li><a href="~/hesabim/sifremi-guncelle">Şifremi Güncelle</a></li>
 
                     </ul>
                 </li>
+                @if (_cookieService.checkAdminState(asistPatentCore.Model.Enums.UserRoleEnum.supervisor))
+                {
+            <li>
+                <a href="javascript: void(0);"><i class="fa fa-building"></i> <span> Yönetim </span> <span class="menu-arrow"></span></a>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li><a href="~/admin/gonderilen-email-taslaklari">Email Taslakları Yönetimi</a></li>
+                </ul>
+                <ul class="nav-second-level" aria-expanded="false">
+                    <li><a href="~/admin/kullanicilari-yonet">Kullanıcılar</a></li>
+                </ul>
+                
+            </li>
+                }
 
                 <li>
                     <a onclick="signOutSocial('@provider')" class="cursor-show">

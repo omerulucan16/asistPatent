@@ -46,6 +46,12 @@
     <script src="~/assets/js/toastr.min.js"></script>
     <script src="~/plugins/custombox/js/custombox.min.js"></script>
     <script src="/plugins/custombox/js/legacy.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.15/jquery.mask.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#userPhoneNumber').mask('(000) 000 00 00');
+        });
+    </script>
     @{ ProcessToastrs();}
     @{
         void ProcessToastrs()

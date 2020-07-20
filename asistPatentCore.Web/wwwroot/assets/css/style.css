@@ -57,6 +57,25 @@ File: Main Css File
   Menu
 ============= */
 /* Metis Menu css */
+.float-right
+{
+    float:right;
+}
+.header-title {
+    margin-bottom: 8px;
+     text-transform: none !important; 
+    letter-spacing: 0.02em;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 0;
+}
+.btn-custom:hover, .btn-custom:focus, .btn-custom:active, .btn-custom.active, .btn-custom.focus, .btn-custom:active, .btn-custom:focus, .btn-custom:hover, .open > .dropdown-toggle.btn-custom {
+    background-color: #1d71b8 !important;
+    border: 1px solid #1d71b8 !important;
+}
+.nav-second-level li.active > a {
+    color: #1d71b8 !important;
+}
 .text-custom {
     color: #1d71b8 !important;
 }
@@ -84,6 +103,7 @@ File: Main Css File
 .btn-custom-asist {
     background-color: #1d71b8 !important;
     border-color: #1d71b8 !important;
+    color:white;
 }
 
 .btn-facebook-login {

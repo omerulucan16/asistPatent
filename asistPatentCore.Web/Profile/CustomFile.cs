@@ -9,10 +9,12 @@ namespace asistPatentCore.Web.Profile
         public CustomProfile()
         {
             CreateMap<UsersViewModel, Users>().ReverseMap();
+            CreateMap<UsersViewModel, MyAccountViewModel>().ReverseMap();
             CreateMap<RegisterViewModel, Users>().ReverseMap();
             CreateMap<UsersViewModel, RegisterViewModel>().ReverseMap();
             CreateMap<EmailViewModel, UsersViewModel>().ReverseMap();
             CreateMap<EmailViewModel, MailTemplates>().ReverseMap();
+            CreateMap<EmailTemplatesViewModel, MailTemplates>().ReverseMap();
         }
     }
 }

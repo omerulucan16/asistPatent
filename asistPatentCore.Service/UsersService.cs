@@ -8,6 +8,8 @@ using asistPatentCore.Model;
 using asistPatentCore.Model.Enums;
 using Microsoft.AspNetCore.Http;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace asistPatentCore.Service
 {
@@ -28,7 +30,12 @@ namespace asistPatentCore.Service
         }
 
        
-
+        public UsersListViewModel getUsersList()
+        {
+            UsersListViewModel model = new UsersListViewModel();
+            model.userList = _mapper.Map<IList<UsersViewModel>>(_mainContext.users.ToList());
+            return model;
+        }
         public bool checkEmailAdress(string email)
         {
             
@@ -100,8 +107,30 @@ namespace asistPatentCore.Service
         }
         public bool checkPhoneNumber(string phone)
         {
-            //burada telefon numarasını kontrol edelim
-            return true;
+            
+            if (phone != null)
+            {
+                
+                phone = Regex.Replace(phone, @"[^0-9]+", "");
+                
+                if (phone[0].ToString() == "0")
+                {
+                    return false;
+                }
+                else if(phone[0].ToString() == "5" && phone.Length==10)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+            
         }
         public bool checkUserHave(string email)
         {
@@ -185,6 +214,7 @@ namespace asistPatentCore.Service
             {
                 Users model = new Users();
                 model = _mapper.Map<Users>(registerModel);
+                model.userPhoneNumber = Regex.Replace(model.userPhoneNumber, @"[^0-9]+", "");
                 model.role = Model.Enums.UserRoleEnum.customer;
                 model.status = Model.Enums.UserStatusEnum.Waiting;
                 model.userCreateDate = DateTime.Now;
@@ -307,6 +337,30 @@ namespace asistPatentCore.Service
 
 
         }
+        public bool changeRegisterUserPasswordWithEmail(MyAccountViewModel model)
+        {
+            Users userInformation = _mainContext.users.Where(w => w.userEmailAdress == model.userEmailAdress && w.status == UserStatusEnum.Active).FirstOrDefault();
+            if (userInformation != null && model.userPassword == model.userRePassword && model.userActivePassword == userInformation.userPassword && checkUserPassword(model.userPassword))
+            {
+                userInformation.userPassword = model.userPassword;
+                if (_mainContext.SaveChanges() == 1)
+                {
+                    ToastrService.AddToUserQueue(new Toastr("Şifreniz başarıyla değiştirilmiştir.", type: Model.Enums.ToastrType.Success));
+                    return true;
+                }
+                else
+                {
+                    ToastrService.AddToUserQueue(new Toastr("Şifreniz değiştirilirken bir hata ile karşılaşıldı.", type: Model.Enums.ToastrType.Error));
+                    return false;
+                }
+            }
+            else
+            {
+                ToastrService.AddToUserQueue(new Toastr("Şifreniz değiştirilirken bir hata ile karşılaşıldı.", type: Model.Enums.ToastrType.Error));
+                return false;
+            }
+        }
+
         public bool changeRegisterUserPassword(RegisterViewModel model)
         {
             string userId = getUserIdFromUserToken(new Guid(model.accessToken));

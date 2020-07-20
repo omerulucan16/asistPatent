@@ -8,6 +8,9 @@
     <Folder Include="Profile\" />
     <Folder Include="Views\Login\" />
     <Folder Include="Views\Register\" />
+    <Folder Include="Views\MyAccount\" />
+    <Folder Include="Views\EmailTemplates\" />
+    <Folder Include="Views\UserManagement\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.0.0" />
@@ -15,6 +18,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.Facebook" Version="3.1.5" />
     <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="3.1.1" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\asistPatentCore.Model\asistPatentCore.Model.csproj">
@@ -857,5 +861,7 @@
     <Content Remove="wwwroot\plugins\tooltipster\tooltipster.core.min.js" />
     <Content Remove="wwwroot\plugins\tooltipster\tooltipster.bundle.min.js" />
     <Content Remove="wwwroot\plugins\tooltipster\tooltipster.bundle.min.css" />
+    <Content Remove="wwwroot\assets\css\style.css.map" />
+    <Content Remove="wwwroot\assets\css\style.css" />
   </ItemGroup>
 </Project>
