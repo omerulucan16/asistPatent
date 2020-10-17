@@ -1,0 +1,73 @@
+﻿@model asistPatentCore.ViewModel.MailSourceViewModel
+@{
+    ViewBag.title = "Asist Patent | Email Kaynak Oluştur";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title">
+                        Yeni Mail Adresi
+                    </h4>
+
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-20">
+                                @using (Html.BeginForm("Create", "MailSources", FormMethod.Post))
+                                {
+                                    
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Email Adı</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.TextBoxFor(m => m.username, new { @class = "form-control", @required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label" for="example-email">Email Parola</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.TextBoxFor(m => m.password, new { @class = "form-control", @required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label" for="example-email">Sunucu</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.TextBoxFor(m => m.smtpServer, new { @class = "form-control", @required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label" for="example-email">Port</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.TextBoxFor(m => m.port, new { @class = "form-control", @required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label" for="example-email">Gönderen Adı</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.TextBoxFor(m => m.displayName, new { @class = "form-control", @required = "required" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label" for="example-email">SSL Aktifliği</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.CheckBoxFor(m => m.enableSsl)
+                                        </div>
+                                    </div>
+                                    <button class="btn float-right btn-custom-asist " type="submit">Ekle</button>
+
+                                }
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div> <!-- end card-box -->
+            </div><!-- end col -->
+        </div>
+    </div><!-- end col -->
+</div>
+<!-- end row -->

@@ -1,0 +1,382 @@
+﻿@model asistPatentCore.ViewModel.BrandApplicationViewModel
+@{
+    ViewBag.title = "Asist Patent | Marka Yeni Başvuru ";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+  
+}
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-12">
+                <div class="card-box">
+                    <h4 class="m-t-0 header-title">
+                        Yeni Başvuru
+                    </h4>
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="p-20">
+
+                                @using (Html.BeginForm("Create", "BrandApplication", FormMethod.Post, new { id = "createBrandRequest", enctype = "multipart/form-data" }))
+                                {
+                                    @Html.HiddenFor(m => m.processToken)
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Başvuru Şekli</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.DropDownListFor(m => m.applicationType, Model.ApplicationTypeList, new { @class = "form-control", @onchange = "submitParam(0);" })
+                                        </div>
+                                    </div>
+                                    <div class="form-group row">
+                                        <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">İşlem Türü</label>
+                                        <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                            @Html.DropDownListFor(m => m.selectedBrandApplication, Model.brandApplicationtypeList, "Lütfen Seçiniz", new { @class = "form-control", @onchange = "submitParam(1);" })
+                                        </div>
+                                    </div>
+
+
+                                    @if (Model.brandApplicationVisibilty != null && Model.brandApplicationVisibilty.brandUploadStatus)
+                                    {
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Marka Dosyaları</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                @Html.TextBoxFor(m => m.uploadFiles, new { type = "file", @multiple = "multiple" })
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (Model.brandApplicationVisibilty != null && Model.brandApplicationVisibilty.brandNameStatus)
+                                    {
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Marka Adı</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                @Html.TextBoxFor(m => m.brandName, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (Model.brandApplicationVisibilty != null && Model.brandApplicationVisibilty.applicationClassStatus)
+                                    {
+                                        <div class="form-group row" id="mainclass">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Sınıf</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                <div class="row" style="margin-bottom:20px;">
+                                                    <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10 col-9">
+                                                        @Html.TextBoxFor(m => m.subclassSearchText, new { @class = "form-control", @placeholder = "Sınıf Ara" })
+                                                    </div>
+                                                    <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2 col-3">
+                                                        <button class="btn  btn-custom-asist" style="width:100%; height:100%;" onclick="submitParam(2)">Ara</button>
+                                                    </div>
+                                                </div>
+                                                @for (int i = 0; i < Model.applicationClassList.applicationClassList.Count; i++)
+                                                {
+                                                    <div class="form-check form-check-inline" style="width:80px;">
+                                                        @if (Model.applicationClassList.applicationClassList[i].isSelected)
+                                                        {
+                                                            @Html.CheckBox("applicationClassList.applicationClassList[" + i + "].isSelected", new { @checked = "checked", @Name = "applicationClassList.applicationClassList[" + i + "].isSelected", @onclick = string.Format("setAllCheckedorNot({0})", Model.applicationClassList.applicationClassList[i].id) })
+
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.CheckBox("applicationClassList.applicationClassList[" + i + "].isSelected", new { @Name = "applicationClassList.applicationClassList[" + i + "].isSelected", @onclick = string.Format("setAllCheckedorNot({0})", Model.applicationClassList.applicationClassList[i].id) })
+
+                                                        }
+                                                        @Html.HiddenFor(m => m.applicationClassList.applicationClassList[i].id)
+                                                        <label class="form-check-label" style="text-decoration: underline;margin-left:2px;"><span onclick="openSubclass('@Model.applicationClassList.applicationClassList[i].id','@Model.applicationClassList.applicationClassList[i].appclassname','@Model.applicationClassList.applicationClassList.Count()')">@((Model.applicationClassList.applicationClassList[i].appclassnumber)+".") Sınıf</span></label>
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label"></div>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12 classGroupLine">
+
+                                                <span style="cursor:pointer;text-decoration:underline;" onclick="setAllClassSelectedorNot(1)">Tümünü Seç</span>
+                                                <span style="margin-left:15px;cursor:pointer;text-decoration:underline;" onclick="setAllClassSelectedorNot(0)">Temizle</span>
+
+                                            </div>
+                                        </div>
+                                        <div id="subclassmodal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 class="modal-title" id="modalSubClassHeader">{header}</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        @for (int i = 0; i < Model.applicationSubClassList.subList.Count; i++)
+                                                        {
+                                                            <div class="col-lg-12">
+                                                                <div class="form-check form-check-inline" style="display:none;" id="subClassmainId_@Model.applicationSubClassList.subList[i].appclassId">
+                                                                    @if (Model.applicationSubClassList.subList[i].isSelected)
+                                                                    {
+                                                                        @Html.CheckBox("applicationSubClassList.subList[" + i + "].isSelected", new { @checked = "checked", @Name = "applicationSubClassList.subList[" + i + "].isSelected", Id = "subClass" + i + "_main" + Model.applicationSubClassList.subList[i].appclassId, @onclick = string.Format("setSubClassStatus({0})", Model.applicationSubClassList.subList[i].appclassId) })
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.CheckBox("applicationSubClassList.subList[" + i + "].isSelected", new { @Name = "applicationSubClassList.subList[" + i + "].isSelected", Id = "subClass" + i + "_main" + Model.applicationSubClassList.subList[i].appclassId, @onclick = string.Format("setSubClassStatus({0})", Model.applicationSubClassList.subList[i].appclassId) })
+
+                                                                    }
+                                                                    @Html.HiddenFor(m => m.applicationSubClassList.subList[i].id)
+                                                                    <label class="form-check-label" style="margin-left:2px;"><span> @Model.applicationSubClassList.subList[i].subclassname</span></label>
+                                                                </div>
+                                                            </div>
+                                                        }
+                                                        @for (int i = 0; i < Model.applicationClassList.applicationClassList.Count; i++)
+                                                        {
+
+                                                            <div class="col-lg-12" style="display:none;" id="subClassmainId_@Model.applicationClassList.applicationClassList[i].id">
+                                                                <label class="form-check-label"><span>Ek</span></label>
+                                                            </div>
+                                                            <div class="col-lg-12">
+                                                                <div class="form-check form-check-inline" style="display:none;" id="subClassmainId_@Model.applicationClassList.applicationClassList[i].id">
+                                                                    @Html.TextAreaFor(m => m.applicationClassList.applicationClassList[i].additionalClass, new { @class = "form-control",@oninput = string.Format("setClassStatusActive({0})", Model.applicationClassList.applicationClassList[i].id) })
+                                                                </div>
+                                                            </div>
+                                                        }
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (Model.brandApplicationVisibilty != null && Model.brandApplicationVisibilty.brandExplanationStatus)
+                                    {
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Açıklama</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                @Html.TextAreaFor(m => m.explanation, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (Model.brandApplicationVisibilty != null && Model.brandApplicationVisibilty.companiesListStatus)
+                                    {
+                                       
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Hak Sahibi</label>
+                                            <div class="col-lg-7 col-md-7 col-sm-12 col-xs-12">
+                                                @Html.DropDownListFor(m => m.selectedCompany, Model.companieList, new { @class = "select2 form-control select2-multiple", Multiple = "multiple" })
+                                            </div>
+                                            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                                                <a class="btn btn-danger" onclick="addNewCompany()">Yeni Hak Sahibi Ekle</a>
+                                            </div>
+                                        </div>
+
+                                        <div id="companyaddmodal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered modal-lg">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                                                        <h4 class="modal-title" id="modalSubClassHeader">Yeni Hak Sahibi Ekle</h4>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <div class="radio radio-info form-check-inline">
+
+                                                            <input type="radio" name="createCompany.companyTypeChoose" checked id="companyTypePersonel" value="0" onchange="companyTypeChange();" />
+                                                            <label for="inlineRadio1"> Şahış </label>
+                                                        </div>
+                                                        <div class="radio radio-info form-check-inline">
+                                                            @Html.RadioButtonFor(m => m.createCompany.companyTypeChoose, "1", new { @id = "companyTypellc", @onchange = "companyTypeChange();" })
+                                                            <label for="inlineRadio2"> Firma </label>
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">Firma Adı</label>
+                                                            @Html.TextBoxFor(m => m.createCompany.companyTitle, new { @class = "form-control" })
+                                                        </div>
+                                                        <div class="form-group" id="taxCenterCover" style="display:none;">
+                                                            <label class="col-form-label">Vergi Dairesi</label>
+                                                            @Html.TextBoxFor(m => m.createCompany.taxCenter, new { @class = "form-control" })
+                                                        </div>
+                                                        <div class="form-group" id="taxNumberCover" style="display:none;">
+                                                            <label class="col-form-label">Vergi Numarası</label>
+                                                            @Html.TextBoxFor(m => m.createCompany.taxNumber, new { @class = "form-control" })
+                                                        </div>
+                                                        <div class="form-group" id="identityNumberCover">
+                                                            <label class="col-form-label">Tc Kimlik Numarası</label>
+                                                            @Html.TextBoxFor(m => m.createCompany.identyNumber, new { @class = "form-control" })
+                                                        </div>
+                                                        <div class="form-group">
+                                                            <label class="col-form-label">Firma Adresi</label>
+                                                            @Html.TextAreaFor(m => m.createCompany.adress, new { @class = "form-control" })
+                                                        </div>
+                                                        <button class="btn btn-custom-asist waves-light waves-effect " onclick="submitParam(3)">Oluştur</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    @if (Model.selectedBrandApplication != 0)
+                                    {
+                                        <div class="form-group row">
+                                            <label class="col-lg-2 col-md-2 col-sm-12 col-xs-12 col-form-label">Toplam Fiyat</label>
+                                            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+                                                <label class="prices" id="price_value">@Html.DisplayFor(m => m.prices.totalPrice) </label>
+                                                <button class="btn btn-warning waves-light waves-effect btn float-right " onclick="submitParam(99)">Sepete Ekle</button>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <!-- end row -->
+
+                </div> <!-- end card-box -->
+            </div><!-- end col -->
+        </div>
+    </div><!-- end col -->
+</div>
+<!-- end row -->
+<script>
+    var tuitionPrice = Number('@(Model.prices == null ? 0 : Model.prices.tuition)');
+    var servicePrice = Number('@(Model.prices == null ? 0 : Model.prices.service)');
+    var extraClassServicePrice = Number('@(Model.prices == null ? 0 : Model.prices.extraClassService)');
+    var branchPrice = Number('@(Model.prices == null ? 0 : Model.prices.branch)');
+    function submitParam(type) {
+        $("#processToken").val(type)
+        document.getElementById("createBrandRequest").submit();
+    }
+    function addNewCompany() {
+        $('#companyaddmodal').modal();
+    }
+    function companyTypeChange() {
+        var companyTypePersonel = document.getElementById("companyTypePersonel").checked;
+        var companyTypeLLC = document.getElementById("companyTypellc").checked;
+        if (companyTypePersonel) {
+            $('#taxCenterCover').css("display", "none");
+            $('#taxNumberCover').css("display", "none");
+            $('#identityNumberCover').css("display", "block");
+        }
+        else {
+            $('#taxCenterCover').css("display", "block");
+            $('#taxNumberCover').css("display", "block");
+            $('#identityNumberCover').css("display", "none");
+        }
+        debugger;
+    }
+    function setAllClassSelectedorNot(status) {
+        status = status == 1 ? true : false;
+        var selectorAppend = "#mainclass input[type=\"checkbox\"]";
+        var allClasses = document.querySelectorAll(selectorAppend);
+        var allClassesLength = allClasses.length;
+        for (var i = 0; i < allClassesLength; i++) {
+            if (!status) {
+                document.getElementById("applicationClassList_applicationClassList_" + i + "__additionalClass").value = "";
+            }
+            allClasses[i].checked = status;
+            var selectorAppend = "#subClassmainId_" + i + " input[type=\"checkbox\"]";
+            var subGroupSelector = document.querySelectorAll(selectorAppend);
+            var subGroupSelectorLength = subGroupSelector.length;
+            for (var p = 0; p < subGroupSelectorLength; p++) {
+
+                document.querySelectorAll(selectorAppend)[p].checked = status;
+            }
+        }
+        calculateBrandApply();
+
+
+    }
+    function setAllCheckedorNot(groupno) {
+
+        var selectorAppend = "#subClassmainId_" + groupno +" input[type=\"checkbox\"]";
+        var subGroupSelector = document.querySelectorAll(selectorAppend);
+        var subGroupSelectorLength = subGroupSelector.length;
+        var status = document.getElementById("applicationClassList_applicationClassList_" + (groupno - 1 )+ "__isSelected").checked;
+        for (var i = 0; i < subGroupSelectorLength; i++) {
+
+            document.querySelectorAll(selectorAppend)[i].checked = status;
+        }
+        calculateBrandApply();
+
+    }
+    function setSubClassStatus(groupno) {
+        var selectorAppend = "#subClassmainId_" + groupno + " input[type=\"checkbox\"]";
+        var subGroupSelector = document.querySelectorAll(selectorAppend);
+        var subGroupSelectorLength = subGroupSelector.length;
+        var status = 0;
+        for (var i = 0; i < subGroupSelectorLength; i++) {
+            if (document.querySelectorAll(selectorAppend)[i].checked)
+            {
+                status = 1;
+            }
+        }
+        if (status == 1) {
+            document.getElementById("applicationClassList_applicationClassList_" + (groupno - 1) + "__isSelected").checked = true;
+        }
+        else {
+            var additionalVal = document.getElementById("applicationClassList_applicationClassList_" + (Number(groupno) - 1) + "__additionalClass").value;
+            
+            if (additionalVal != "") {
+                document.getElementById("applicationClassList_applicationClassList_" + (Number(groupno) - 1) + "__isSelected").checked = true;
+            }
+            else {
+                document.getElementById("applicationClassList_applicationClassList_" + (groupno - 1) + "__isSelected").checked = false;
+            }
+        }
+        calculateBrandApply();
+
+    }
+    function setClassStatusActive(groupno) {
+
+        var additionalVal = document.getElementById("applicationClassList_applicationClassList_" + (Number(groupno) - 1) + "__additionalClass").value;
+        debugger;
+        if (additionalVal !="" ) {
+            document.getElementById("applicationClassList_applicationClassList_" + (Number(groupno) - 1) + "__isSelected").checked = true;
+        }
+        else {
+            document.getElementById("applicationClassList_applicationClassList_" + (Number(groupno) - 1) + "__isSelected").checked = false;
+            setSubClassStatus(groupno);
+        }
+        calculateBrandApply();
+    }
+    function openSubclass(id,classheader,total)
+    {
+        hideAllSubChecks(total);
+        document.getElementById("modalSubClassHeader").innerHTML = "Sınıf " + id + " (" + classheader + ")";
+        var elemsId = "#subClassmainId_" + id;
+        var elems = document.querySelectorAll(elemsId);
+        var index = 0, length = elems.length;
+        for (; index < length; index++) {
+            elems[index].style.display = "inline";
+        }
+        $("#subclassmodal").modal();
+    }
+    function hideAllSubChecks(totalClass)
+    {
+        for (var i = 0; i < totalClass; i++) {
+            var elemsId = "#subClassmainId_" + i;
+            var elems = document.querySelectorAll(elemsId);
+            var index = 0, length = elems.length;
+            for (; index < length; index++) {
+                elems[index].style.display = "none";
+            }
+        }
+    }
+    function calculateBrandApply() {
+        var selectorAppend = "#mainclass input[type=\"checkbox\"]";
+        var allClasses = document.querySelectorAll(selectorAppend);
+        var allClassesLength = allClasses.length;
+        var total = 0;
+        var totalPrice = 0;
+        for (var p = 0; p < allClassesLength; p++) {
+            if (document.querySelectorAll(selectorAppend)[p].checked) {
+                total = total + 1;
+            }
+        }
+        if (total == 0) {
+            totalPrice = 0;
+        }
+        else if (total == 1) {
+            totalPrice = tuitionPrice + servicePrice;
+        }
+        else {
+            totalPrice = (total * tuitionPrice) + servicePrice + (extraClassServicePrice * total);
+        }
+        totalPrice = (totalPrice * 118) / 100;
+        setPrice(totalPrice);
+    }
+    function setPrice(value) {
+        document.getElementById("price_value").innerHTML = value.toLocaleString('tr-TR', {
+            style: 'currency',
+            currency: 'TRY',
+        }); 
+        
+    }
+</script>

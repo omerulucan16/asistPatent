@@ -1,0 +1,55 @@
+﻿@using asistPatentCore.Model.Enums
+@model asistPatentCore.ViewModel.MailSourceListViewModel
+@{
+    ViewBag.title = "Asist Patent | Email Kaynak Listesi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Start Page content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            
+            <div class="col-12">
+                <div class="card-box">
+                    <a href="~/admin/mail-kaynaklari/yeni" class="btn m-b-10 btn-custom-asist " type="submit">Yeni Oluştur</a>
+                    <div class="table-rep-plugin">
+                        <div class="table-responsive" data-pattern="priority-columns">
+                            <table id="tech-companies-1" class="table  table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Mail Adresi</th>
+                                        <th>Sunucu</th>
+                                        <th>Port</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+
+                                    @foreach (var item in Model.mailList)
+                                    {
+
+                                        <tr>
+                                            <th>@item.username</th>
+                                            <td>@item.smtpServer</td>
+                                            <td>@item.port</td>
+                                            <td><a href="~/admin/mail-kaynaklari/@item.id" class="btn btn-outline-success waves-light waves-effect">Değiştir</a></td>
+
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <!-- end row -->
+
+    </div> <!-- container -->
+
+</div> <!-- content -->

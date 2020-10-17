@@ -1,0 +1,84 @@
+﻿@model asistPatentCore.ViewModel.BasketListViewModel
+@{
+    ViewBag.title = "Asist Patent | Sepetim";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int counter = 1;
+    double basketTotal = 0;
+    double basketTotalWithTax = 0;
+}
+
+<!-- Start Page content -->
+<div class="content">
+    <div class="container-fluid">
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card-box">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table mt-4">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Kategori</th>
+                                            <th>Başvuru Tipi</th>
+                                            <th>Açıklama</th>
+                                            <th>Fiyat</th>
+                                            <th class="text-right">Toplam</th>
+                                            <th></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in Model.basketList)
+                                        {
+                                            <tr>
+                                                <td>@counter</td>
+                                                <td>@item.appCategoryTypeString</td>
+                                                <td>@item.brandAppTypeName</td>
+                                                <td>
+                                                    @item.explation
+                                                </td>
+                                                <td>&#8378; @item.priceWithoutTax.ToString("#.##")</td>
+                                                <td class="text-right">&#8378; @item.totalPrice.ToString("#.##")</td>
+                                                <td><a href="~/sepetim/sil/@item.basketId" style="color:red;"><i class="fi-trash"></i></a></td>
+                                            </tr>
+                                            counter = counter + 1;
+                                            basketTotalWithTax = basketTotalWithTax + item.totalPrice;
+                                            basketTotal = basketTotal + item.priceWithoutTax;
+                                        }
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        
+                        <div class="col-12">
+                            <div class="float-right">
+                                <p><b>Toplam:</b> &#8378;@basketTotal.ToString("#.##")</p>
+                                <p><b>KDV (18):</b> &#8378;@((basketTotalWithTax - basketTotal).ToString("#.##"))</p>
+                                <h3>&#8378;@basketTotalWithTax.ToString("#.##")</h3>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                    </div>
+
+                    <div class="hidden-print mt-4 mb-4">
+                        <div class="text-right">
+                            <!--<a href="javascript:window.print()" class="btn btn-primary waves-effect waves-light"><i class="fa fa-print m-r-5"></i> Yazdır</a>-->
+                            <a href="~/ödeme" class="btn btn-custom-asist waves-effect waves-light">Ödeme Yap</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+        <!-- end row -->
+
+    </div> <!-- container -->
+
+</div> <!-- content -->
